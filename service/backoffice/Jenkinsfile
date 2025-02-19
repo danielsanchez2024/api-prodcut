@@ -38,7 +38,7 @@ pipeline {
                     docker build \
                         --build-arg BUILD_DATE="${env.BUILD_TIME}" \
                         -t danielsanchez18/api-products:${TAG} \
-                        api-products/services/backoffice/.
+                        api-products/service/backoffice/.
                     """
 
                     echo "Etiquetando la imagen como latest..."
