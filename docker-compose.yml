@@ -1,0 +1,85 @@
+services:
+  backoffices:
+    image: danielsanchez18/backoffice-app-product:latest
+    container_name: backoffices
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_PORT=5000
+      - FLASK_HOST=0.0.0.0
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_USER_FILE=/run/secrets/mongo_user
+      - MONGO_PASSWORD_FILE=/run/secrets/mongo_password
+      - MONGO_DB=product
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ES_HOST=elasticsearch
+      - ES_PORT=9200
+      - ES_INDEX=product
+      - ES_SCHEME=http
+    networks:
+      - backoffice_network
+      - database_network
+    secrets:
+      - mongo_user
+      - mongo_password
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/mongo_user
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo_password
+      - MONGO_INITDB_DATABASE=user
+    networks:
+      - database_network
+    volumes:
+      - mongodb_data:/data/db
+    secrets:
+      - mongo_user
+      - mongo_password
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - database_network
+    volumes:
+      - redis_data:/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - database_network
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    
+
+networks:
+  backoffice_network:
+    driver: bridge
+  database_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
+  elasticsearch_data:
+
+secrets:
+  mongo_user:
+    file: ./secrets/mongo_user.txt
+  mongo_password:
+    file: ./secrets/mongo_password.txt

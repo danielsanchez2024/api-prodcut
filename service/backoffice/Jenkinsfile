@@ -1,0 +1,90 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('DOCKER_CREDENTIALS') 
+        PART1_TAG = "${Math.abs(new Random().nextInt(90000) + 10000)}"
+        PART2_TAG = "${Math.abs(new Random().nextInt(90000) + 10000)}"
+        TAG = "${PART1_TAG}${PART2_TAG}"
+    }
+
+    stages {
+        stage('Limpiar Workspace') {
+            steps {
+                script {
+                    echo "Eliminando archivos previos..."
+                    sh 'rm -rf prueba-sistemas || true'
+                }
+            }
+        }
+
+        stage('Clonar Repositorio') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'GIT-AUTENTICATION', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh '''
+                    git clone https://${GIT_USERNAME}@github.com/danielsanchez2024/api-prodcut.git
+                    '''
+                }
+            }
+            
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "Construyendo la imagen de Docker..."
+                    env.BUILD_TIME = sh(script: 'date -u +"%Y-%m-%dT%H:%M:%SZ"', returnStdout: true).trim()
+                    sh """
+                    docker build \
+                        --build-arg BUILD_DATE="${env.BUILD_TIME}" \
+                        -t danielsanchez18/api-products:${TAG} \
+                        api-products/proyect-product-k8s/services/backoffice/.
+                    """
+
+                    echo "Etiquetando la imagen como latest..."
+                    sh """
+                    docker tag danielsanchez18/api-products:${TAG} danielsanchez18/api-products:latest
+                    """
+                }
+            }
+        }
+
+        stage('Login DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        echo "Autenticando en Docker Hub..."
+                        sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Push DockerHub') {
+            steps {
+                script {
+                    echo "Subiendo las imágenes a Docker Hub..."
+                    sh """
+                    docker push danielsanchez18/api-products:${TAG}
+                    docker push danielsanchez18/api-products:latest
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                echo "🚀 Despliegue exitoso. Imágenes subidas a Docker Hub:"
+                echo "danielsanchez18/api-products:${TAG}"
+                echo "danielsanchez18/api-products:latest"
+            }
+        }
+        failure {
+            echo "❌ Hubo un error durante el proceso."
+        }
+    }
+}
