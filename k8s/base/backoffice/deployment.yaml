@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backoffice
+  labels:
+    app: backoffice
+    role: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backoffice
+      role: application
+  template:
+    metadata:
+      labels:
+        app: backoffice
+        role: application
+    spec:
+      containers:
+        - name: backoffice
+          image: danielsanchez18/api-products:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_PORT
+              value: 5000
+            - name: FLASK_HOST
+              value: backoffice
+            - name: MONGO_HOST
+              value: mongodb
+            - name: MONGO_PORT
+              value: 27017
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_DB
+              value: product
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: 6379
+            - name: ES_HOST
+              value: elasticsearch
+            - name: ES_PORT
+              value: 9200
+            - name: ES_SCHEME
+              value: http
+            - name: ES_INDEX
+              value: product
+          resources:
+            requests:
+              memory: "250Mi"
+              cpu: "250m"
+            limits:
+              memory: "250Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /livez
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            failureThreshold: 3
+          volumeMounts:
+            - mountPath: /app
+              name: backoffice-volume
+      volumes:
+        - name: backioffice-volume
+          emptyDir: {}

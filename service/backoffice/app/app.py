@@ -11,5 +11,9 @@ app.register_blueprint(mongo_bp)
 app.register_blueprint(redis_routes)
 app.register_blueprint(es_routes)
 
+@app.route("/livez")
+def livez():
+    return {"status": "ok"}
+
 if __name__ == "__main__":
     app.run(host=config["app"]["host"], port=config["app"]["port"], debug=True)
