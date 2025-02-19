@@ -1,0 +1,28 @@
+nameOverride: "elasticsearch"
+fullnameOverride: "elasticsearch"
+
+replicas: 1
+minimumMasterNodes: 1
+
+tests:
+  enabled: false
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+esJavaOpts: "-Xms1g -Xmx1g"
+
+volumeClaimTemplate:
+  resources:
+    requests:
+      storage: 5Gi  
+
+persistence:
+  enabled: true
+
+maxUnavailable: 0

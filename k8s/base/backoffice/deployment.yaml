@@ -25,13 +25,13 @@ spec:
             - containerPort: 5000
           env:
             - name: FLASK_PORT
-              value: 5000
+              value: "5000"
             - name: FLASK_HOST
-              value: backoffice
+              value: "backoffice"
             - name: MONGO_HOST
-              value: mongodb
+              value: "mongodb"
             - name: MONGO_PORT
-              value: 27017
+              value: "27017"
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
@@ -43,19 +43,19 @@ spec:
                   name: database-secrets
                   key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGO_DB
-              value: product
+              value: "product"
             - name: REDIS_HOST
-              value: redis
+              value: "redis-master"
             - name: REDIS_PORT
-              value: 6379
+              value: "6379"
             - name: ES_HOST
-              value: elasticsearch
+              value: "elasticsearch"
             - name: ES_PORT
-              value: 9200
+              value: "9200"
             - name: ES_SCHEME
-              value: http
+              value: "http"
             - name: ES_INDEX
-              value: product
+              value: "product"
           resources:
             requests:
               memory: "250Mi"
@@ -78,8 +78,8 @@ spec:
             periodSeconds: 30
             failureThreshold: 3
           volumeMounts:
-            - mountPath: /app
-              name: backoffice-volume
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
-        - name: backioffice-volume
+        - name: tmp-volume
           emptyDir: {}

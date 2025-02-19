@@ -2,27 +2,23 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: backoffice
-  labels:
-    app: backoffice
-    role: application
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     kubernetes.io/ingress.class: "nginx"
 spec:
   tls:
-    - hosts:
-        - python.gopenux.lan
-      secretName: backoffice-tls
+  - hosts:
+    - python.gopenux.lan
+    secretName: backoffice-tls-secret
   rules:
-    - host: python.gopenux.lan
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: backoffice
-              port:
-                number: 5000
+  - host: python.gopenux.lan
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backoffice
+            port:
+              number: 80

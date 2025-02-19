@@ -24,3 +24,87 @@ Crear un proyecto siguiendo la Arquitectura de kustomize donde:
 - Cada entorno debe desplegarse en un clúster de minikube con al menos 2 nodos
 - Dependiendo del entorno, se deben agregar los limites de recursos teniendo en cuenta que canary es para pruebas, pre debe ser muy parecido a pro y pro es el más usado
 - Usar la mayor cantidad de etiquetas de kustomize posible
+
+
+## curls para consutar el funcionamiento
+### Elasticsearch
+
+Agregar producto:
+curl -k -X POST https://python.gopenux.lan/products/elasticsearch \
+     -H "Content-Type: application/json" \
+     -d '{
+           "id": "",
+           "name": "",
+           "description": ""
+         }'
+
+Obtener todos los productos:
+curl -k -X GET https://python.gopenux.lan/products/elasticsearch
+
+Obtener producto por ID:
+curl -k -X GET https://python.gopenux.lan/products/elasticsearch/<ID>
+
+Actualizar producto:
+curl -k -X PUT https://python.gopenux.lan/products/elasticsearch/<ID> \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "",
+           "description": ""
+         }'
+
+Eliminar producto:
+curl -k -X DELETE https://python.gopenux.lan/products/elasticsearch/<id>
+
+
+### Mongodb
+
+Agregar Producto:
+curl -k -X POST https://python.gopenux.lan/products/mongo \
+     -H "Content-Type: application/json" \
+     -d '{"name": "", "price": , "stock": }'
+
+Obtener todos los productos:
+curl -k -X GET https://python.gopenux.lan/products/mongo
+
+Obtener Producto por ID:
+curl -k -X GET https://python.gopenux.lan/products/mongo/<product_id>
+
+Actualizar Producto:
+curl -k -X PUT https://python.gopenux.lan/products/mongo/<product_id> \
+     -H "Content-Type: application/json" \
+     -d '{"price": , "stock": }'
+
+Eliminar Producto:
+curl -k -X DELETE https://python.gopenux.lan/products/mongo/<product_id>
+
+
+### Redis
+
+Agregar Producto:
+curl -k -X POST https://python.gopenux.lan/products/redis \
+     -H "Content-Type: application/json" \
+     -d '{
+           "id": "",
+           "name": "",
+           "price": ,
+           "stock": 
+         }
+
+Obtener todos los productos:
+curl -k -X GET https://python.gopenux.lan/products/redis
+
+Obtener Producto por ID:
+curl -k -X GET https://python.gopenux.lan/products/redis/<id>
+
+Actualizar producto:
+curl -k -X PUT https://python.gopenux.lan/products/redis/<id> \
+     -H "Content-Type: application/json" \
+     -d '{
+           "id": "",
+           "name": "",
+           "price": ,
+           "stock": 
+         }'
+
+Eliminar Producto:
+curl -k -X DELETE https://python.gopenux.lan/products/redis/123

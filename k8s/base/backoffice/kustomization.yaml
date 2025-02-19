@@ -6,9 +6,4 @@ resources:
   - service.yaml
   - ingress.yaml
   - secret-database.yaml
-
-secretGenerator:
-  - name: backoffice-tls
-    files:
-      - ../../components/certs/tls.crt
-      - ../../components/certs/tls.key
+  - secret-tls.yaml

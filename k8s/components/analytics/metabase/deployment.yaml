@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metabase
+  labels:
+    role: metabase
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      role: metabase
+  template:
+    metadata:
+      labels:
+        role: metabase
+    spec:
+      containers:
+        - name: metabase
+          image: metabase/metabase:v0.44.4
+          env:
+          - name: MB_ANON_TRACKING_ENABLED
+            value: 'false'
+          - name: MB_COLORIZE_LOGS
+            value: 'false'
+          - name: MB_EMOJI_IN_LOGS
+            value: 'false'
+          - name: MB_DB_TYPE
+            value: 'postgres'
+          - name: MB_DB_DBNAME
+            value: 'metabase'
+          - name: MB_DB_PORT
+            value: '5432'
+          - name: MB_DB_USER
+            valueFrom:
+                secretKeyRef:
+                  name: metabase-secret
+                  key: username
+          - name: MB_DB_PASS
+            valueFrom:
+                secretKeyRef:
+                  name: metabase-secret
+                  key: password
+          - name: MB_DB_HOST
+            value: "postgresql-analytics"
+          ports:
+            - name: http
+              containerPort: 3000
+          resources:
+            limits:
+              cpu: "2"
+              memory: "1G"
+            requests:
+              cpu: "2"
+              memory: "1G"

@@ -1,0 +1,23 @@
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+auth:
+  enabled: false
+
+architecture: standalone 
+
+resources:
+  limits:
+    cpu: "2"  
+    memory: "1Gi"  
+  requests:
+    cpu: "500m"
+    memory: "750Mi"
+
+persistence:
+  enabled: true
+  storageClass: "standard"  
+  size: 5Gi 

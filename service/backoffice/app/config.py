@@ -3,7 +3,7 @@ import os
 config = {
     "app": {
         "port": os.getenv('FLASK_PORT', 5000),
-        "host": os.getenv('FLASK_HOST', "0.0.0.0")
+        "host": os.getenv('FLASK_HOST', "backoffice")
     },
     "mongo": {
         "host": os.getenv("MONGO_HOST", "mongodb"), 

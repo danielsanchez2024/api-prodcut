@@ -1,0 +1,14 @@
+initdbScripts:
+  init-mydb.sql: |
+    CREATE DATABASE analytics;
+    GRANT ALL PRIVILEGES ON DATABASE analytics TO metabase;
+
+auth:
+  postgresPassword: 'password'
+  username: 'metabase'
+  password: 'password'
+  database: 'metabase'
+
+persistence:
+  enabled: true
+  size: '10Gi'
