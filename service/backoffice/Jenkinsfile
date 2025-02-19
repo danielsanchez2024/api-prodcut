@@ -22,7 +22,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'GIT-AUTENTICATION', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh '''
-                    git clone https://${GIT_USERNAME}@github.com/danielsanchez2024/api-prodcut.git
+                    git clone https://${GIT_USERNAME}@github.com/danielsanchez2024/api-product.git
                     '''
                 }
             }
